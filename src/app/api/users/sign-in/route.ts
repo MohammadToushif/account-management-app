@@ -31,9 +31,7 @@ export async function POST(request: NextRequest) {
     }
 
     const payload = {
-      _id: user._id,
-      email: user.email,
-      username: user.username,
+      id: user._id,
     };
 
     const token = jwt.sign(payload, conf.appCredentials.appTokenSceret, {
@@ -44,7 +42,7 @@ export async function POST(request: NextRequest) {
       {
         message: "Login successful",
         success: true,
-        user,
+        data: user,
       },
       { status: 200 }
     );
