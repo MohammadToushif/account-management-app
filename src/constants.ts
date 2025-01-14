@@ -1,3 +1,3 @@
 export const CONST = {
-  DB_NAME: String("MeTubeDB"),
+  DB_NAME: String("AccountManagementDB"),
 };

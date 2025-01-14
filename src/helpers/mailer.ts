@@ -1,6 +1,7 @@
 import User from "@/models/userModel";
 import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
+import { conf } from "@/config/conf";
 
 type EmailParams = {
   email: string;
@@ -26,12 +27,12 @@ export const sendEmail = async ({ email, emailType, userId }: EmailParams) => {
     }
 
     const transporter = nodemailer.createTransport({
-      host: "sandbox.smtp.mailtrap.io",
+      host: conf.mailCredentials.mailHost,
       port: 2525,
       secure: false,
       auth: {
-        user: "c6a9eab872220c",
-        pass: "04e09c16f2d2a5",
+        user: conf.mailCredentials.mailUserId,
+        pass: conf.mailCredentials.mailPassword,
       },
     });
 
@@ -41,12 +42,12 @@ export const sendEmail = async ({ email, emailType, userId }: EmailParams) => {
       subject:
         emailType === "VERIFY" ? "Verify your email" : "Reset your password",
       html: `<p>Click <a href="${
-        process.env.DOMAIN
+        conf.appCredentials.appDomain
       }/verifyemail?token=${hashedToken}">here</a> to ${
         emailType === "VERIFY" ? "verify your email" : "reset your password"
       }
             or copy and paste the link below in your browser. <br> ${
-              process.env.DOMAIN
+              conf.appCredentials.appDomain
             }/verifyemail?token=${hashedToken}
             </p>`,
     };

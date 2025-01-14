@@ -36,5 +36,5 @@ const userSchema = new mongoose.Schema(
 );
 
 // Since NextJS is run on edge so we have to first check is model already exist or not.
-const User = mongoose.models.users || mongoose.model("User", userSchema);
+const User = mongoose.models.users || mongoose.model("users", userSchema);
 export default User;
