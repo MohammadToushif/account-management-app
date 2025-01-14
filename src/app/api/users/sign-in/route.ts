@@ -19,7 +19,10 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json(
-        { error: "User does not exist." },
+        {
+          success: false,
+          message: "User does not exist.",
+        },
         { status: 404 }
       );
     }
@@ -27,7 +30,13 @@ export async function POST(request: NextRequest) {
     // Verify password
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
-      return NextResponse.json({ error: "Invalid password" }, { status: 401 });
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid password.",
+        },
+        { status: 401 }
+      );
     }
 
     const payload = {
