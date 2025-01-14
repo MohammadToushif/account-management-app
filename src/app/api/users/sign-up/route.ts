@@ -32,14 +32,19 @@ export async function POST(request: NextRequest) {
     await sendEmail({
       email: newUser.email,
       emailType: "VERIFY",
-      userId: newUser._id
+      userId: newUser._id,
     });
 
-    return NextResponse.json({
-      message: "User registered successfully",
-      success: true,
-      user: newUser
-    });
+    return NextResponse.json(
+      {
+        message: "User registered successfully",
+        success: true,
+        user: newUser,
+      },
+      {
+        status: 201,
+      }
+    );
   } catch (error) {
     return NextResponse.json(
       {

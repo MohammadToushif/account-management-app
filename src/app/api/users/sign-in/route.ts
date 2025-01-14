@@ -2,6 +2,8 @@ import { dbConnect } from "@/database/dbConnect";
 import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { conf } from "@/config/conf";
 
 dbConnect();
 
@@ -9,6 +11,7 @@ export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
     const { username, email, password } = reqBody;
+
     // Find user by username or email
     const user = await User.findOne({
       $or: [{ username }, { email }],
@@ -19,20 +22,37 @@ export async function POST(request: NextRequest) {
         { error: "User does not exist." },
         { status: 404 }
       );
-    } else {
-      // Verify password
-      const validPassword = await bcrypt.compare(password, user.password);
-      if (!validPassword) {
-        return NextResponse.json(
-          { error: "Invalid password" },
-          { status: 401 }
-        );
-      }
-      return NextResponse.json({
-        message: "Login successful",
-        success: true
-      });
     }
+
+    // Verify password
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+      return NextResponse.json({ error: "Invalid password" }, { status: 401 });
+    }
+
+    const payload = {
+      _id: user._id,
+      email: user.email,
+      username: user.username,
+    };
+
+    const token = jwt.sign(payload, conf.appCredentials.appTokenSceret, {
+      expiresIn: "1d",
+    });
+
+    const response = NextResponse.json(
+      {
+        message: "Login successful",
+        success: true,
+        user,
+      },
+      { status: 200 }
+    );
+
+    response.cookies.set("token", token, {
+      httpOnly: true,
+    });
+    return response;
   } catch (error) {
     return NextResponse.json(
       {

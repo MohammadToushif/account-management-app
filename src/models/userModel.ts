@@ -35,6 +35,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Since NextJS is run on edge so we have to first check is model already exist or not.
-const User = mongoose.models.users || mongoose.model("users", userSchema);
+// Since NextJS is run on edge so first we have to check is model already exist or not.
+const User = mongoose.models.users || mongoose.model("User", userSchema);
 export default User;
