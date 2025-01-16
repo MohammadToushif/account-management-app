@@ -1,7 +1,7 @@
 import React, { useState, FormEvent } from "react";
 import Link from "next/link";
-import axios from "axios";
 import { toast } from "react-toastify";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 
 function SignInForm() {
@@ -16,20 +16,29 @@ function SignInForm() {
       const payloadObj = Object.fromEntries(formData.entries());
 
       // Validate payloadObj before sending
-      if ((!payloadObj.username && !payloadObj.email) || !payloadObj.password) {
-        toast.error("username or email and password is required");
+      if (
+        !payloadObj.username ||
+        !payloadObj.email ||
+        !payloadObj.password ||
+        !payloadObj.confirmPassword
+      ) {
+        toast.error("All fields are required!");
+        return;
+      }
+      if (payloadObj.password !== payloadObj.confirmPassword) {
+        toast.error("Passwords do not match. Please try again.");
         return;
       }
 
       // API Call
-      const response = await axios.post("/api/users/sign-in", payloadObj);
+      const response = await axios.post("/api/users/sign-up", payloadObj);
       if (response.status === 200 && response.statusText === "OK") {
-        toast(response?.data?.message || "Login Success");
+        toast(response?.data?.message || "Registration Successful");
         setTimeout(() => {
-          router.push("/profile");
-        }, 1500);
+          router.push("/verifyemail");
+        }, 1000);
       } else {
-        toast(response?.data?.message || "Login Faild");
+        toast(response?.data?.message || "Registration Failed");
       }
     } catch (error) {
       const errorMessage =
@@ -43,7 +52,6 @@ function SignInForm() {
   };
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-      <input type="hidden" name="remember" />
       <div className="relative">
         <div className="absolute right-3 top-8">
           <svg
@@ -74,9 +82,6 @@ function SignInForm() {
           />
         </div>
       </div>
-      <div className="text-center">
-        <span className="text-base text-gray-500">OR</span>
-      </div>
       <div className="content-center">
         <label className="ml-3 text-sm font-bold text-gray-700 tracking-wide">
           Email
@@ -101,7 +106,19 @@ function SignInForm() {
           name="password"
         />
       </div>
-      <div className="flex items-center justify-between">
+      <div className="mt-8 content-center">
+        <label className="ml-3 text-sm font-bold text-gray-700 tracking-wide">
+          Confirm Password
+        </label>
+        <input
+          className="w-full content-center text-base px-4 py-2 border-b rounded-2xl border-gray-300 focus:outline-none focus:border-indigo-500"
+          type="password"
+          placeholder="Confirm your password"
+          autoComplete="off"
+          name="confirmPassword"
+        />
+      </div>
+      {/* <div className="flex items-center justify-between">
         <div className="flex items-center">
           <input
             type="checkbox"
@@ -113,29 +130,29 @@ function SignInForm() {
             htmlFor="remember"
             className="ml-2 block text-sm text-gray-900"
           >
-            Remember me
+            Accept all terms and conditions
           </label>
         </div>
         <div className="text-sm">
           <a href="#" className="text-indigo-400 hover:text-blue-500">
-            Forgot your password?
+            terms and conditions
           </a>
         </div>
-      </div>
+      </div> */}
       <div>
         <button
           type="submit"
           className="w-full flex justify-center bg-gradient-to-r from-indigo-500 to-blue-600  hover:bg-gradient-to-l hover:from-blue-500 hover:to-indigo-600 text-gray-100 p-4  rounded-full tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500"
           disabled={isLoading}
         >
-          {isLoading ? "Logging in..." : "Sign In"}
+          {isLoading ? "Processing ..." : "Sign Up"}
         </button>
       </div>
-      <p className="flex flex-col items-center justify-center mt-10 text-center text-md text-gray-500">
-        <span>Dont have an account?</span>
-        <Link href="/signup">
+      <p className="flex items-center justify-center gap-1 mt-10 text-center text-md text-gray-500">
+        <span>Already have an account?</span>
+        <Link href="/signin">
           <span className="text-indigo-400 hover:text-blue-500 no-underline hover:underline cursor-pointer transition ease-in duration-300">
-            Sign up
+            Sign In
           </span>
         </Link>
       </p>

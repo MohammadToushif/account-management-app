@@ -1,128 +1,167 @@
 "use client";
-import React from "react";
-import "@/styles/signin.css";
+import React, { useState, FormEvent } from "react";
+import Link from "next/link";
 import Image from "next/image";
-import { SignInForm } from "@/components/index";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function SignIn() {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      setIsLoading(true);
+      const formData = new FormData(e.currentTarget);
+      const payloadObj = Object.fromEntries(formData.entries());
+
+      // Validate payloadObj before sending
+      if ((!payloadObj.username && !payloadObj.email) || !payloadObj.password) {
+        toast.error("Please enter a Username or Email, and a Password!");
+        return;
+      }
+
+      // API Call
+      const response = await axios.post("/api/users/sign-in", payloadObj);
+      if (response.status === 200 && response.statusText === "OK") {
+        toast(response?.data?.message || "Login Successful");
+        setTimeout(() => {
+          router.push("/profile");
+        }, 1000);
+      } else {
+        toast(response?.data?.message || "Login Failed");
+      }
+    } catch (error) {
+      const errorMessage =
+        axios.isAxiosError(error) && error.response?.data?.message
+          ? error.response.data.message
+          : "An unexpected error occurred. Please try again.";
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
-    <div className="relative min-h-screen flex ">
-      <div className="flex flex-col sm:flex-row items-center md:items-start sm:justify-center md:justify-start flex-auto min-w-0 bg-white">
+    <div className="w-full min-h-screen pt-14 pb-12">
+      <div className="flex bg-white rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
         <div
-          className="sm:w-1/2 xl:w-2/5 h-full hidden md:flex flex-auto items-center justify-start p-10 overflow-hidden bg-purple-900 text-white bg-no-repeat bg-cover relative"
+          className="hidden lg:block lg:w-1/2 bg-cover"
           style={{
             backgroundImage:
-              "url(https://images.unsplash.com/photo-1579451861283-a2239070aaa9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80)",
+              "url('https://images.unsplash.com/photo-1546514714-df0ccc50d7bf?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=667&q=80')",
           }}
-        >
-          <div className="absolute bg-gradient-to-b from-blue-900 to-gray-900 opacity-75 inset-0 z-0"></div>
-          <div
-            className="absolute triangle  min-h-screen right-0 w-16"
-            style={{}}
-          ></div>
-          <a
-            href="https://codepen.io/uidesignhub"
-            target="_blank"
-            title="codepen aji"
-            className="flex absolute top-5 text-center text-gray-100 focus:outline-none"
-          >
+        ></div>
+        <div className="w-full p-8 lg:w-1/2">
+          <h2 className="text-2xl font-semibold text-gray-700 text-center">
             <Image
-              width={10}
-              height={10}
-              src="/public/next.svg"
-              alt="aji"
-              className="object-cover mx-auto rounded-full w-10 h-10"
+              src={"/next.svg"}
+              alt="logo"
+              width={80}
+              height={50}
+              className="mx-auto mb-4"
             />
-            <p className="text-xl ml-3">
-              aji<strong>mon</strong>
-            </p>{" "}
+          </h2>
+          <p className="text-xl text-gray-600 text-center">Welcome back!</p>
+          <a
+            href="#"
+            className="flex items-center justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100"
+          >
+            <div className="px-4 py-3">
+              <svg className="h-6 w-6" viewBox="0 0 40 40">
+                <path
+                  d="M36.3425 16.7358H35V16.6667H20V23.3333H29.4192C28.045 27.2142 24.3525 30 20 30C14.4775 30 10 25.5225 10 20C10 14.4775 14.4775 9.99999 20 9.99999C22.5492 9.99999 24.8683 10.9617 26.6342 12.5325L31.3483 7.81833C28.3717 5.04416 24.39 3.33333 20 3.33333C10.7958 3.33333 3.33335 10.7958 3.33335 20C3.33335 29.2042 10.7958 36.6667 20 36.6667C29.2042 36.6667 36.6667 29.2042 36.6667 20C36.6667 18.8825 36.5517 17.7917 36.3425 16.7358Z"
+                  fill="#FFC107"
+                />
+                <path
+                  d="M5.25497 12.2425L10.7308 16.2583C12.2125 12.59 15.8008 9.99999 20 9.99999C22.5491 9.99999 24.8683 10.9617 26.6341 12.5325L31.3483 7.81833C28.3716 5.04416 24.39 3.33333 20 3.33333C13.5983 3.33333 8.04663 6.94749 5.25497 12.2425Z"
+                  fill="#FF3D00"
+                />
+                <path
+                  d="M20 36.6667C24.305 36.6667 28.2167 35.0192 31.1742 32.34L26.0159 27.975C24.3425 29.2425 22.2625 30 20 30C15.665 30 11.9842 27.2359 10.5975 23.3784L5.16254 27.5659C7.92087 32.9634 13.5225 36.6667 20 36.6667Z"
+                  fill="#4CAF50"
+                />
+                <path
+                  d="M36.3425 16.7358H35V16.6667H20V23.3333H29.4192C28.7592 25.1975 27.56 26.805 26.0133 27.9758C26.0142 27.975 26.015 27.975 26.0158 27.9742L31.1742 32.3392C30.8092 32.6708 36.6667 28.3333 36.6667 20C36.6667 18.8825 36.5517 17.7917 36.3425 16.7358Z"
+                  fill="#1976D2"
+                />
+              </svg>
+            </div>
+            <h1 className="px-4 py-3 w-5/6 text-center text-gray-600 font-bold">
+              Sign in with Google
+            </h1>
           </a>
-          <Image
-            width={384}
-            height={384}
-            alt="jasper"
-            src="/headphone.png"
-            className="absolute -right-10"
-          />
-          <div className="w-full max-w-md z-10">
-            <div className="sm:text-4xl xl:text-5xl font-bold leading-tight mb-6">
-              Reference site about Lorem Ipsum..
-            </div>
-            <div className="sm:text-sm xl:text-md text-gray-200 font-normal">
-              {" "}
-              What is Lorem Ipsum Lorem Ipsum is simply dummy text of the
-              printing and typesetting industry Lorem Ipsum has been the
-              industrys standard dummy text ever since the 1500s when an unknown
-              printer took a galley of type and scrambled it to make a type
-              specimen book it has?
-            </div>
+          <div className="mt-4 flex items-center justify-between">
+            <span className="border-b w-1/5 lg:w-1/4"></span>
+            <a href="#" className="text-xs text-center text-gray-500 uppercase">
+              or login with email
+            </a>
+            <span className="border-b w-1/5 lg:w-1/4"></span>
           </div>
-          {/* remove custom style */}
-          <ul className="circles">
-            {[...Array(10)].map((_, index) => (
-              <li key={index}></li>
-            ))}
-          </ul>
-        </div>
-        <div className="md:flex md:items-center md:justify-center w-full sm:w-auto md:h-full md:w-2/5 xl:w-2/5 p-8  md:p-10 lg:p-14 sm:rounded-lg md:rounded-none bg-white ">
-          <div className="max-w-md w-full space-y-8">
-            <div className="text-center">
-              <h2 className="mt-6 text-3xl font-bold text-gray-900">
-                Welcom Back!
-              </h2>
-              {/* <p className="mt-2 text-sm text-gray-500">
-                Please sign in to your account
-              </p> */}
+          <form onSubmit={handleSubmit}>
+            <div className="mt-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Username
+              </label>
+              <input
+                className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                placeholder="Your username"
+                type="text"
+                name="username"
+                autoComplete="off"
+              />
             </div>
-            {/* <div className="flex flex-row justify-center items-center space-x-3">
-              <a
-                href="https://www.behance.net/ajeeshmon"
-                target="_blank"
-                className="w-11 h-11 items-center justify-center inline-flex rounded-2xl font-bold text-lg   bg-blue-900 hover:shadow-lg cursor-pointer transition ease-in duration-300"
-              >
-                <Image
-                  width={4}
-                  height={4}
-                  alt="image"
-                  className="w-4 h-4"
-                  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOnN2Z2pzPSJodHRwOi8vc3ZnanMuY29tL3N2Z2pzIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgeD0iMCIgeT0iMCIgdmlld0JveD0iMCAwIDI0IDI0IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1MTIgNTEyIiB4bWw6c3BhY2U9InByZXNlcnZlIiBjbGFzcz0iIj48Zz48cGF0aCB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGQ9Im0xNS45OTcgMy45ODVoMi4xOTF2LTMuODE2Yy0uMzc4LS4wNTItMS42NzgtLjE2OS0zLjE5Mi0uMTY5LTMuMTU5IDAtNS4zMjMgMS45ODctNS4zMjMgNS42Mzl2My4zNjFoLTMuNDg2djQuMjY2aDMuNDg2djEwLjczNGg0LjI3NHYtMTAuNzMzaDMuMzQ1bC41MzEtNC4yNjZoLTMuODc3di0yLjkzOWMuMDAxLTEuMjMzLjMzMy0yLjA3NyAyLjA1MS0yLjA3N3oiIGZpbGw9IiNmZmZmZmYiIGRhdGEtb3JpZ2luYWw9IiMwMDAwMDAiIHN0eWxlPSIiIGNsYXNzPSIiPjwvcGF0aD48L2c+PC9zdmc+"
-                />
-              </a>
-              <a
-                href="https://twitter.com/ajeemon?lang=en"
-                target="_blank"
-                className="w-11 h-11 items-center justify-center inline-flex rounded-2xl font-bold text-lg  text-white bg-blue-400 hover:shadow-lg cursor-pointer transition ease-in duration-300"
-              >
-                <Image
-                  width={4}
-                  height={4}
-                  alt="image"
-                  className="w-4 h-4"
-                  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOnN2Z2pzPSJodHRwOi8vc3ZnanMuY29tL3N2Z2pzIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgeD0iMCIgeT0iMCIgdmlld0JveD0iMCAwIDY4MS4zMzQ2NCA2ODEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDUxMiA1MTIiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxnPjxwYXRoIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZD0ibTIwMC45NjQ4NDQgNTE1LjI5Mjk2OWMyNDEuMDUwNzgxIDAgMzcyLjg3MTA5NC0xOTkuNzAzMTI1IDM3Mi44NzEwOTQtMzcyLjg3MTA5NCAwLTUuNjcxODc1LS4xMTcxODgtMTEuMzIwMzEzLS4zNzEwOTQtMTYuOTM3NSAyNS41ODU5MzctMTguNSA0Ny44MjQyMTgtNDEuNTg1OTM3IDY1LjM3MTA5NC02Ny44NjMyODEtMjMuNDgwNDY5IDEwLjQ0MTQwNi00OC43NTM5MDcgMTcuNDYwOTM3LTc1LjI1NzgxMyAyMC42MzY3MTggMjcuMDU0Njg3LTE2LjIzMDQ2OCA0Ny44MjgxMjUtNDEuODk0NTMxIDU3LjYyNS03Mi40ODgyODEtMjUuMzIwMzEzIDE1LjAxMTcxOS01My4zNjMyODEgMjUuOTE3OTY5LTgzLjIxNDg0NCAzMS44MDg1OTQtMjMuOTE0MDYyLTI1LjQ3MjY1Ni01Ny45NjQ4NDMtNDEuNDAyMzQ0LTk1LjY2NDA2Mi00MS40MDIzNDQtNzIuMzY3MTg4IDAtMTMxLjA1ODU5NCA1OC42ODc1LTEzMS4wNTg1OTQgMTMxLjAzMTI1IDAgMTAuMjg5MDYzIDEuMTUyMzQ0IDIwLjI4OTA2MyAzLjM5ODQzNyAyOS44ODI4MTMtMTA4LjkxNzk2OC01LjQ4MDQ2OS0yMDUuNTAzOTA2LTU3LjYyNS0yNzAuMTMyODEyLTEzNi45MjE4NzUtMTEuMjUgMTkuMzYzMjgxLTE3Ljc0MjE4OCA0MS44NjMyODEtMTcuNzQyMTg4IDY1Ljg3MTA5MyAwIDQ1LjQ2MDkzOCAyMy4xMzY3MTkgODUuNjA1NDY5IDU4LjMxNjQwNyAxMDkuMDgyMDMyLTIxLjUtLjY2MDE1Ni00MS42OTUzMTMtNi41NjI1LTU5LjM1MTU2My0xNi4zODY3MTktLjAxOTUzMS41NTA3ODEtLjAxOTUzMSAxLjA4NTkzNy0uMDE5NTMxIDEuNjcxODc1IDAgNjMuNDY4NzUgNDUuMTcxODc1IDExNi40NjA5MzggMTA1LjE0NDUzMSAxMjguNDY4NzUtMTEuMDE1NjI1IDIuOTk2MDk0LTIyLjYwNTQ2OCA0LjYwOTM3NS0zNC41NTg1OTQgNC42MDkzNzUtOC40Mjk2ODcgMC0xNi42NDg0MzctLjgyODEyNS0yNC42MzI4MTItMi4zNjMyODEgMTYuNjgzNTk0IDUyLjA3MDMxMiA2NS4wNjY0MDYgODkuOTYwOTM3IDEyMi40MjU3ODEgOTEuMDIzNDM3LTQ0Ljg1NTQ2OSAzNS4xNTYyNS0xMDEuMzU5Mzc1IDU2LjA5NzY1Ny0xNjIuNzY5NTMxIDU2LjA5NzY1Ny0xMC41NjI1IDAtMjEuMDAzOTA2LS42MDU0NjktMzEuMjYxNzE4OC0xLjgxNjQwNyA1Ny45OTk5OTk4IDM3LjE3NTc4MSAxMjYuODcxMDkzOCA1OC44NzEwOTQgMjAwLjg4NjcxODggNTguODcxMDk0IiBmaWxsPSIjZmZmZmZmIiBkYXRhLW9yaWdpbmFsPSIjMDAwMDAwIiBzdHlsZT0iIj48L3BhdGg+PC9nPjwvc3ZnPg=="
-                />
-              </a>
-              <a
-                href="https://in.linkedin.com/in/ajeeshmon"
-                target="_blank"
-                className="w-11 h-11 items-center justify-center inline-flex rounded-2xl font-bold text-lg  text-white bg-blue-500 hover:shadow-lg cursor-pointer transition ease-in duration-300"
-              >
-                <Image
-                  width={4}
-                  height={4}
-                  alt="image"
-                  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOnN2Z2pzPSJodHRwOi8vc3ZnanMuY29tL3N2Z2pzIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgeD0iMCIgeT0iMCIgdmlld0JveD0iMCAwIDI0IDI0IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1MTIgNTEyIiB4bWw6c3BhY2U9InByZXNlcnZlIj48Zz48cGF0aCB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGQ9Im0yMy45OTQgMjR2LS4wMDFoLjAwNnYtOC44MDJjMC00LjMwNi0uOTI3LTcuNjIzLTUuOTYxLTcuNjIzLTIuNDIgMC00LjA0NCAxLjMyOC00LjcwNyAyLjU4N2gtLjA3di0yLjE4NWgtNC43NzN2MTYuMDIzaDQuOTd2LTcuOTM0YzAtMi4wODkuMzk2LTQuMTA5IDIuOTgzLTQuMTA5IDIuNTQ5IDAgMi41ODcgMi4zODQgMi41ODcgNC4yNDN2Ny44MDF6IiBmaWxsPSIjZmZmZmZmIiBkYXRhLW9yaWdpbmFsPSIjMDAwMDAwIiBzdHlsZT0iIj48L3BhdGg+PHBhdGggeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBkPSJtLjM5NiA3Ljk3N2g0Ljk3NnYxNi4wMjNoLTQuOTc2eiIgZmlsbD0iI2ZmZmZmZiIgZGF0YS1vcmlnaW5hbD0iIzAwMDAwMCIgc3R5bGU9IiI+PC9wYXRoPjxwYXRoIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZD0ibTIuODgyIDBjLTEuNTkxIDAtMi44ODIgMS4yOTEtMi44ODIgMi44ODJzMS4yOTEgMi45MDkgMi44ODIgMi45MDkgMi44ODItMS4zMTggMi44ODItMi45MDljLS4wMDEtMS41OTEtMS4yOTItMi44ODItMi44ODItMi44ODJ6IiBmaWxsPSIjZmZmZmZmIiBkYXRhLW9yaWdpbmFsPSIjMDAwMDAwIiBzdHlsZT0iIj48L3BhdGg+PC9nPjwvc3ZnPg=="
-                  className="w-4 h-4"
-                />
-              </a>
+            <div className="mt-4">
+              <div className="flex justify-between">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Email Address
+                </label>
+                <span className="text-xs text-gray-500 pe-1">Or</span>
+              </div>
+              <input
+                className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                placeholder="example@gmail.com"
+                type="email"
+                name="email"
+                autoComplete="off"
+              />
             </div>
-            <div className="flex items-center justify-center space-x-2">
-              <span className="h-px w-16 bg-gray-200"></span>
-              <span className="text-gray-300 font-normal">
-                or continue with
+            <div className="mt-4">
+              <div className="flex justify-between">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Password
+                </label>
+                <a href="#" className="text-xs text-gray-500">
+                  Forget Password?
+                </a>
+              </div>
+              <input
+                className="bg-gray-200 text-gray-700 focus:outline-none focus:shadow-outline border border-gray-300 rounded py-2 px-4 block w-full appearance-none"
+                placeholder="Your password"
+                type="password"
+                name="password"
+                autoComplete="off"
+              />
+            </div>
+            <div className="mt-8">
+              <button
+                className="bg-blue-700 text-white font-bold py-2 px-4 w-full rounded hover:bg-blue-600"
+                type="submit"
+                disabled={isLoading}
+              >
+                {isLoading ? "Logging ..." : "Sign In"}
+              </button>
+            </div>
+          </form>
+          <div className="mt-4 flex items-center justify-between">
+            <span className="border-b w-1/5 md:w-1/4"></span>
+            <Link href="/signup">
+              <span className="text-xs text-gray-500 uppercase">
+                or sign up
               </span>
-              <span className="h-px w-16 bg-gray-200"></span>
-            </div> */}
-            <SignInForm />
+            </Link>
+            <span className="border-b w-1/5 md:w-1/4"></span>
           </div>
         </div>
       </div>
