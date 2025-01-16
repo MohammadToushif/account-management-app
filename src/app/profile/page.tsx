@@ -6,6 +6,7 @@ import Image from "next/image";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { SignOutBtn } from "@/components/index";
 
 interface User {
   _id: string;
@@ -156,12 +157,13 @@ export default function Profile() {
                           Help
                         </Link>
                         <div className="border-b"></div>
-                        <Link
+                        {/* <Link
                           className="block px-4 py-2 mt-2 text-sm bg-white md:mt-0 focus:text-gray-900 hover:bg-indigo-100 focus:bg-gray-200 focus:outline-none focus:shadow-outline"
                           href="/logout"
                         >
                           Logout
-                        </Link>
+                        </Link> */}
+                        <SignOutBtn />
                       </div>
                     </div>
                   )}
@@ -201,8 +203,14 @@ export default function Profile() {
                     <li className="flex items-center py-3">
                       <span>Status</span>
                       <span className="ml-auto">
-                        <span className="bg-green-500 py-1 px-2 rounded text-white text-sm">
-                          Active
+                        <span
+                          className={`${
+                            userData?.isVerified ? "bg-green-500" : "bg-red-500"
+                          }  py-1 px-2 rounded text-white text-sm`}
+                        >
+                          {userData?.isVerified
+                            ? "✅ Verified"
+                            : "❌ Not Verified"}
                         </span>
                       </span>
                     </li>
@@ -310,7 +318,9 @@ export default function Profile() {
                       </div>
                       <div className="grid grid-cols-2">
                         <div className="px-4 py-2 font-semibold">Last Name</div>
-                        <div className="px-4 py-2">Toushif</div>
+                        <div className="px-4 py-2">
+                          {userData?.username || ""}
+                        </div>
                       </div>
                       <div className="grid grid-cols-2">
                         <div className="px-4 py-2 font-semibold">Gender</div>
@@ -342,10 +352,10 @@ export default function Profile() {
                         <div className="px-4 py-2 font-semibold">Email.</div>
                         <div className="px-4 py-2">
                           <a
-                            className="text-blue-800"
-                            href="mailto:jane@example.com"
+                            className="text-gray-800"
+                            href={userData?.email || ""}
                           >
-                            jane@example.com
+                            {userData?.email || ""}
                           </a>
                         </div>
                       </div>

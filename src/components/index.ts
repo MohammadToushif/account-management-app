@@ -1,3 +1,4 @@
 import SignUpForm from "./SignUpForm";
+import SignOutBtn from "./SignOutBtn";
 
-export { SignUpForm };
+export { SignUpForm, SignOutBtn };
