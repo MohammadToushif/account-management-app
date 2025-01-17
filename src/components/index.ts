@@ -1,4 +1,5 @@
+import Loader from "./Loader";
 import SignUpForm from "./SignUpForm";
-import SignOutBtn from "./SignOutBtn";
+import LogoutBtn from "./LogoutBtn";
 
-export { SignUpForm, SignOutBtn };
+export { Loader, SignUpForm, LogoutBtn };

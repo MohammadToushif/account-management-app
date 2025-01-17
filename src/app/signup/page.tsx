@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import "@/styles/signin.css";
+import "@/styles/signup.css";
 import Image from "next/image";
 import { SignUpForm } from "@/components/index";
 
@@ -11,8 +11,7 @@ export default function SignUp() {
         <div
           className="sm:w-1/2 xl:w-2/5 h-full hidden md:flex flex-auto items-center justify-start p-10 overflow-hidden bg-purple-900 text-white bg-no-repeat bg-cover relative"
           style={{
-            backgroundImage:
-              "url(https://images.unsplash.com/photo-1579451861283-a2239070aaa9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80)",
+            backgroundImage: "url(/signup-background.avif)",
           }}
         >
           <div className="absolute bg-gradient-to-b from-blue-900 to-gray-900 opacity-75 inset-0 z-0"></div>

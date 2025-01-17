@@ -34,9 +34,10 @@ function SignInForm() {
       const response = await axios.post("/api/users/sign-up", payloadObj);
       if (response.status === 200 && response.statusText === "OK") {
         toast(response?.data?.message || "Registration Successful");
-        setTimeout(() => {
-          router.push("/verifyemail");
-        }, 1000);
+        // setTimeout(() => {
+        //   router.push("/verifyemail");
+        // }, 1000);
+        router.push("/verifyemail");
       } else {
         toast(response?.data?.message || "Registration Failed");
       }

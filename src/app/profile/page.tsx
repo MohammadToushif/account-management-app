@@ -6,7 +6,7 @@ import Image from "next/image";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { SignOutBtn } from "@/components/index";
+import { Loader, LogoutBtn } from "@/components/index";
 
 interface User {
   _id: string;
@@ -57,7 +57,7 @@ export default function Profile() {
   return (
     <>
       {loading ? (
-        <p>Loading ...</p>
+        <Loader />
       ) : (
         <div className="bg-gray-100">
           <div className="w-full text-white bg-main-color">
@@ -163,7 +163,7 @@ export default function Profile() {
                         >
                           Logout
                         </Link> */}
-                        <SignOutBtn />
+                        <LogoutBtn />
                       </div>
                     </div>
                   )}
@@ -483,7 +483,7 @@ export default function Profile() {
             </div>
           </div>
           {/* Footer */}
-          <div className="w-full bg-main-color text-white pt-3 pb-2 text-center">
+          <div className="sticky-bottom w-full bg-main-color text-white pt-3 pb-2 text-center">
             <p>Designed by Code Aviators</p>
           </div>
         </div>

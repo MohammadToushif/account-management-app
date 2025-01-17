@@ -27,9 +27,10 @@ export default function SignIn() {
       const response = await axios.post("/api/users/sign-in", payloadObj);
       if (response.status === 200 && response.statusText === "OK") {
         toast(response?.data?.message || "Login Successful");
-        setTimeout(() => {
-          router.push("/profile");
-        }, 1000);
+        // setTimeout(() => {
+        //   router.push("/profile");
+        // }, 1000);
+        router.push("/profile");
       } else {
         toast(response?.data?.message || "Login Failed");
       }
@@ -43,14 +44,14 @@ export default function SignIn() {
       setIsLoading(false);
     }
   };
+
   return (
     <div className="w-full min-h-screen pt-14 pb-12">
       <div className="flex bg-white rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
         <div
-          className="hidden lg:block lg:w-1/2 bg-cover"
+          className="hidden lg:block lg:w-1/2 bg-no-repeat bg-cover"
           style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1546514714-df0ccc50d7bf?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=667&q=80')",
+            backgroundImage: "url('/lamp-background.jpg')",
           }}
         ></div>
         <div className="w-full p-8 lg:w-1/2">

@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
-function SignOutBtn() {
+function LogoutBtn() {
   const router = useRouter();
 
   const logout = async () => {
@@ -36,4 +36,4 @@ function SignOutBtn() {
   );
 }
 
-export default SignOutBtn;
+export default LogoutBtn;
